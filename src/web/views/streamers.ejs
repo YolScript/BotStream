@@ -38,20 +38,13 @@
         <span>Non configure (GOOGLE_CLIENT_ID manquant)</span>
       </div>
     <% } %>
-
-    <div class="connect-tile tt" style="opacity: 0.5">
-      <div class="badge-icon bg-tiktok">TT</div>
-      <strong>TikTok</strong>
-      <span>Pas de connexion officielle : ajoute le pseudo ci-dessous</span>
-    </div>
   </div>
 
-  <form method="post" action="/dashboard/<%= guild.id %>/streamers/add">
+  <p class="muted" style="margin-bottom: 0.5rem">Pseudo TikTok (pas de connexion officielle disponible) :</p>
+  <form method="post" action="/dashboard/<%= guild.id %>/streamers/add" style="display: flex; gap: 0.6rem">
     <input type="hidden" name="platform" value="tiktok" />
-    <label>Pseudo TikTok
-      <input type="text" name="username" required placeholder="ex: charlidamelio" />
-    </label>
-    <button class="btn btn-tiktok" type="submit">Ajouter ce compte TikTok</button>
+    <input type="text" name="username" required placeholder="ex: charlidamelio" style="flex: 1" />
+    <button class="btn btn-tiktok" type="submit">Ajouter</button>
   </form>
 </div>
 
