@@ -2,6 +2,8 @@
 
 Bot Discord de notifications de live (Twitch / YouTube / TikTok) avec panel web de controle et gestion des abonnements (attribution/retrait automatique de roles).
 
+**Panel en ligne :** https://botstream-production-3022.up.railway.app
+
 ## Fonctionnalites
 
 - Notifications automatiques quand un streamer suivi passe en live sur Twitch, YouTube ou TikTok (embed avec titre, vignette, lien direct).
