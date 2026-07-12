@@ -1,10 +1,19 @@
 <%- include('partials/head') %>
 
 <h1>Vos serveurs</h1>
+<p class="muted">Serveurs Discord ou vous avez la permission "Gerer le serveur".</p>
+
 <div class="grid">
   <% guilds.forEach(function(g) { %>
     <div class="card guild-card">
-      <h2><%= g.name %></h2>
+      <div class="guild-head">
+        <% if (g.icon) { %>
+          <img class="guild-icon" src="https://cdn.discordapp.com/icons/<%= g.id %>/<%= g.icon %>.png?size=64" alt="" />
+        <% } else { %>
+          <div class="guild-icon-fallback"><%= g.name.charAt(0).toUpperCase() %></div>
+        <% } %>
+        <h2><%= g.name %></h2>
+      </div>
       <% if (g.botPresent) { %>
         <span class="badge badge-ok">Bot present</span>
         <a class="btn" href="/dashboard/<%= g.id %>">Gerer</a>

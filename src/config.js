@@ -23,6 +23,10 @@ module.exports = {
   youtube: {
     apiKey: process.env.YOUTUBE_API_KEY,
   },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  },
   web: {
     publicUrl: process.env.PUBLIC_URL || 'http://localhost:3000',
     port: parseInt(process.env.PORT, 10) || 3000,

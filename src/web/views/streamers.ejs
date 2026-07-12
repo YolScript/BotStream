@@ -1,23 +1,68 @@
 <%- include('partials/head') %>
 
-<p><a href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a></p>
+<a class="breadcrumb" href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a>
 <h1>Streamers suivis</h1>
 
 <% if (error) { %><p class="flash flash-error"><%= error %></p><% } %>
+<% if (connected) { %><p class="flash flash-ok">Compte <%= connected %> connecte et ajoute au suivi.</p><% } %>
 
-<form class="card" method="post" action="/dashboard/<%= guild.id %>/streamers/add">
-  <label>Plateforme
-    <select name="platform">
-      <option value="twitch">Twitch</option>
-      <option value="youtube">YouTube</option>
-      <option value="tiktok">TikTok</option>
-    </select>
-  </label>
-  <label>Login / handle / ID
-    <input type="text" name="username" required placeholder="ex: ninja, @chaine ou UCxxxx" />
-  </label>
-  <button class="btn" type="submit">Ajouter</button>
-</form>
+<div class="card">
+  <h2>Connecter une plateforme</h2>
+  <p class="muted">Connecte-toi avec le compte du streamer a suivre : le pseudo et l'avatar sont recuperes automatiquement, aucune saisie manuelle.</p>
+
+  <div class="connect-row">
+    <% if (twitchEnabled) { %>
+      <a class="connect-tile tw" href="/auth/twitch?guildId=<%= guild.id %>">
+        <div class="badge-icon bg-twitch">T</div>
+        <strong>Twitch</strong>
+        <span>Se connecter avec Twitch</span>
+      </a>
+    <% } else { %>
+      <div class="connect-tile tw" style="opacity: 0.5">
+        <div class="badge-icon bg-twitch">T</div>
+        <strong>Twitch</strong>
+        <span>Non configure (TWITCH_CLIENT_ID manquant)</span>
+      </div>
+    <% } %>
+
+    <% if (googleEnabled) { %>
+      <a class="connect-tile yt" href="/auth/google?guildId=<%= guild.id %>">
+        <div class="badge-icon bg-youtube">Y</div>
+        <strong>YouTube</strong>
+        <span>Se connecter avec Google</span>
+      </a>
+    <% } else { %>
+      <div class="connect-tile yt" style="opacity: 0.5">
+        <div class="badge-icon bg-youtube">Y</div>
+        <strong>YouTube</strong>
+        <span>Non configure (GOOGLE_CLIENT_ID manquant)</span>
+      </div>
+    <% } %>
+
+    <div class="connect-tile tt" style="opacity: 0.5">
+      <div class="badge-icon bg-tiktok">TT</div>
+      <strong>TikTok</strong>
+      <span>Pas de connexion officielle : ajout manuel ci-dessous</span>
+    </div>
+  </div>
+
+  <details class="manual-add">
+    <summary>Ajouter manuellement (pseudo, sans connexion — utile pour suivre un streamer qui n'est pas toi)</summary>
+    <form method="post" action="/dashboard/<%= guild.id %>/streamers/add">
+      <label>Plateforme
+        <select name="platform">
+          <option value="twitch">Twitch</option>
+          <option value="youtube">YouTube</option>
+          <option value="tiktok">TikTok</option>
+        </select>
+      </label>
+      <label>Login / handle / ID
+        <input type="text" name="username" required placeholder="ex: ninja, @chaine ou UCxxxx" />
+      </label>
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+  </details>
+</div>
 
 <table class="table">
   <thead>
@@ -27,17 +72,17 @@
     <% streamers.forEach(function(s) { %>
       <tr>
         <td><span class="badge <%= s.is_live ? 'badge-ok' : 'badge-off' %>"><%= s.is_live ? 'EN LIVE' : 'Hors ligne' %></span></td>
-        <td><%= s.platform %></td>
+        <td><span class="platform-badge platform-<%= s.platform %>"><span class="dot"></span><%= s.platform %></span></td>
         <td><%= s.display_name || s.username %></td>
         <td>
           <form method="post" action="/dashboard/<%= guild.id %>/streamers/<%= s.id %>/delete">
-            <button class="btn btn-danger" type="submit">Retirer</button>
+            <button class="btn btn-danger btn-sm" type="submit">Retirer</button>
           </form>
         </td>
       </tr>
     <% }) %>
     <% if (streamers.length === 0) { %>
-      <tr><td colspan="4">Aucun streamer suivi.</td></tr>
+      <tr><td colspan="4" class="muted">Aucun streamer suivi.</td></tr>
     <% } %>
   </tbody>
 </table>

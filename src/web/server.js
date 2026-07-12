@@ -4,6 +4,7 @@ const session = require('express-session');
 const config = require('../config');
 const SQLiteStore = require('./sessionStore');
 const authRoutes = require('./routes/auth');
+const createPlatformAuthRouter = require('./routes/platformAuth');
 const createDashboardRouter = require('./routes/dashboard');
 
 function createServer(client) {
@@ -35,6 +36,7 @@ function createServer(client) {
   });
 
   app.use('/auth', authRoutes);
+  app.use('/auth', createPlatformAuthRouter(client));
   app.use('/dashboard', createDashboardRouter(client));
 
   app.use((req, res) => {

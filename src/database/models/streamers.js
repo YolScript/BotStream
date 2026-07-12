@@ -1,12 +1,15 @@
 const db = require('../db');
 
-function add(guildId, platform, username, displayName = null) {
+// Les identifiants YouTube (UCxxxx) sont sensibles a la casse, contrairement
+// aux logins Twitch/TikTok : ne pas les passer en minuscules.
+function add(guildId, platform, username, displayName = null, platformChannelId = null) {
+  const normalized = platform === 'youtube' ? username : username.toLowerCase();
   const stmt = db.prepare(`
-    INSERT INTO streamers (guild_id, platform, username, display_name)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO streamers (guild_id, platform, username, display_name, platform_channel_id)
+    VALUES (?, ?, ?, ?, ?)
     ON CONFLICT(guild_id, platform, username) DO NOTHING
   `);
-  return stmt.run(guildId, platform, username.toLowerCase(), displayName);
+  return stmt.run(guildId, platform, normalized, displayName, platformChannelId);
 }
 
 function remove(guildId, platform, username) {

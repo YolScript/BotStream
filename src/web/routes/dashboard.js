@@ -65,7 +65,14 @@ module.exports = function createDashboardRouter(client) {
 
   router.get('/:guildId/streamers', ensureGuildManage(client), (req, res) => {
     const rows = streamersModel.listByGuild(req.params.guildId);
-    res.render('streamers', { guild: req.guild, streamers: rows, error: req.query.error });
+    res.render('streamers', {
+      guild: req.guild,
+      streamers: rows,
+      error: req.query.error,
+      connected: req.query.connected,
+      twitchEnabled: !!config.twitch.clientId,
+      googleEnabled: !!config.google.clientId,
+    });
   });
 
   router.post('/:guildId/streamers/add', ensureGuildManage(client), async (req, res) => {

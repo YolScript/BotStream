@@ -8,6 +8,7 @@ Bot Discord de notifications de live (Twitch / YouTube / TikTok) avec panel web 
 - Configuration par serveur : salon de notification par plateforme + role a mentionner.
 - Commandes slash : `/config`, `/streamer`, `/sub`, `/panel`.
 - Panel web (login via Discord OAuth2) pour gerer la configuration, les streamers suivis et les abonnements sans passer par Discord.
+- Connexion directe Twitch/YouTube (OAuth2) pour ajouter un streamer suivi : pas de saisie manuelle, le compte est verifie et lie automatiquement.
 - Abonnements avec attribution de role, duree optionnelle et retrait automatique a expiration.
 
 ## Prerequis
@@ -33,13 +34,18 @@ Remplir `.env` :
 | `DISCORD_CLIENT_SECRET` | Client Secret (onglet OAuth2) |
 | `PUBLIC_URL` | URL publique du panel (ex: `https://monbot.exemple.com`), utilisee pour le callback OAuth2 |
 | `SESSION_SECRET` | Chaine aleatoire longue (`openssl rand -hex 32`) |
-| `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` | Application Twitch (facultatif) |
-| `YOUTUBE_API_KEY` | Cle API YouTube Data v3 (facultatif) |
+| `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` | Application Twitch (facultatif, desactive le polling + le bouton "Connecter Twitch" si absent) |
+| `YOUTUBE_API_KEY` | Cle API YouTube Data v3 (facultatif, desactive le polling YouTube si absente) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | App OAuth2 Google, pour le bouton "Connecter YouTube" (facultatif, voir ci-dessous) |
 | `DEV_GUILD_ID` | ID d'un serveur de test pour deployer les commandes instantanement (facultatif) |
 
 Dans le portail Discord Developer, activer l'intent privilegie **Server Members Intent** (onglet Bot), necessaire pour l'attribution/retrait de roles.
 
-Dans le portail OAuth2, ajouter comme Redirect URI : `<PUBLIC_URL>/auth/discord/callback`.
+Dans le portail OAuth2 Discord, ajouter comme Redirect URI : `<PUBLIC_URL>/auth/discord/callback`.
+
+Dans la console Twitch, ajouter comme OAuth Redirect URL : `<PUBLIC_URL>/auth/twitch/callback` (meme Client ID/Secret que celui deja utilise pour le polling).
+
+Pour le bouton "Connecter YouTube" (facultatif) : creer une app OAuth2 dans Google Cloud Console (APIs & Services > Credentials > Create OAuth Client ID > Web application), activer l'API YouTube Data v3, ajouter `<PUBLIC_URL>/auth/google/callback` comme Redirect URI autorisee. Sans ces variables, le bouton YouTube reste desactive sur le panel (l'ajout manuel du handle/ID reste possible).
 
 ## Lancement
 
@@ -76,7 +82,7 @@ https://discord.com/oauth2/authorize?client_id=<DISCORD_CLIENT_ID>&scope=bot%20a
 Connexion via Discord OAuth2. Affiche les serveurs ou l'utilisateur a la permission "Gerer le serveur", avec pour chacun :
 
 - **Configuration** : salons de notification + role mentionne.
-- **Streamers** : ajout/retrait de streamers suivis, statut live en direct.
+- **Streamers** : connexion directe Twitch/YouTube (OAuth2, sans saisie manuelle) ou ajout manuel (pseudo, utile pour suivre un streamer autre que soi-meme) ; retrait, statut live en direct.
 - **Abonnements** : attribution/retrait de roles avec expiration, vue d'ensemble des abonnements actifs.
 
 ## Limites connues

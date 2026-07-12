@@ -1,6 +1,6 @@
 <%- include('partials/head') %>
 
-<p><a href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a></p>
+<a class="breadcrumb" href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a>
 <h1>Abonnements</h1>
 
 <% if (error) { %><p class="flash flash-error"><%= error %></p><% } %>
@@ -32,18 +32,24 @@
       <tr>
         <td><%= s.user_id %></td>
         <td><%= role ? role.name : s.role_id %></td>
-        <td><%= s.expires_at ? s.expires_at + ' UTC' : 'Permanent' %></td>
+        <td>
+          <% if (s.expires_at) { %>
+            <span class="badge badge-warn"><%= s.expires_at %> UTC</span>
+          <% } else { %>
+            <span class="badge badge-ok">Permanent</span>
+          <% } %>
+        </td>
         <td>
           <form method="post" action="/dashboard/<%= guild.id %>/subscriptions/remove">
             <input type="hidden" name="userId" value="<%= s.user_id %>" />
             <input type="hidden" name="roleId" value="<%= s.role_id %>" />
-            <button class="btn btn-danger" type="submit">Retirer</button>
+            <button class="btn btn-danger btn-sm" type="submit">Retirer</button>
           </form>
         </td>
       </tr>
     <% }) %>
     <% if (subscriptions.length === 0) { %>
-      <tr><td colspan="4">Aucun abonnement actif.</td></tr>
+      <tr><td colspan="4" class="muted">Aucun abonnement actif.</td></tr>
     <% } %>
   </tbody>
 </table>

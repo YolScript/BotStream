@@ -1,23 +1,27 @@
 <%- include('partials/head') %>
 
-<p><a href="/dashboard">&larr; Tous les serveurs</a></p>
+<a class="breadcrumb" href="/dashboard">&larr; Tous les serveurs</a>
 <h1><%= guild.name %></h1>
 
 <div class="grid">
   <div class="card">
     <h2>Configuration</h2>
-    <p>Salons de notification et role mentionne.</p>
+    <p class="muted">Salons de notification et role mentionne.</p>
     <a class="btn" href="/dashboard/<%= guild.id %>/config">Configurer</a>
   </div>
   <div class="card">
     <h2>Streamers</h2>
-    <p><%= streamerCount %> streamer(s) suivi(s).</p>
-    <a class="btn" href="/dashboard/<%= guild.id %>/streamers">Gerer</a>
+    <div class="stat-row">
+      <div class="stat"><strong><%= streamerCount %></strong><span>suivis</span></div>
+    </div>
+    <a class="btn" style="margin-top: 1rem" href="/dashboard/<%= guild.id %>/streamers">Gerer</a>
   </div>
   <div class="card">
     <h2>Abonnements</h2>
-    <p><%= subCount %> abonnement(s) actif(s).</p>
-    <a class="btn" href="/dashboard/<%= guild.id %>/subscriptions">Gerer</a>
+    <div class="stat-row">
+      <div class="stat"><strong><%= subCount %></strong><span>actifs</span></div>
+    </div>
+    <a class="btn" style="margin-top: 1rem" href="/dashboard/<%= guild.id %>/subscriptions">Gerer</a>
   </div>
 </div>
 

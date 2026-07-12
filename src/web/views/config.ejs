@@ -1,12 +1,13 @@
 <%- include('partials/head') %>
 
-<p><a href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a></p>
+<a class="breadcrumb" href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a>
 <h1>Configuration</h1>
 
 <% if (saved) { %><p class="flash flash-ok">Configuration enregistree.</p><% } %>
 
 <form class="card" method="post" action="/dashboard/<%= guild.id %>/config">
-  <label>Salon Twitch
+  <label>
+    <span class="platform-badge platform-twitch"><span class="dot"></span>Twitch</span> — salon de notification
     <select name="twitch_channel">
       <option value="">Non configure</option>
       <% textChannels.forEach(function(c) { %>
@@ -15,7 +16,8 @@
     </select>
   </label>
 
-  <label>Salon YouTube
+  <label>
+    <span class="platform-badge platform-youtube"><span class="dot"></span>YouTube</span> — salon de notification
     <select name="youtube_channel">
       <option value="">Non configure</option>
       <% textChannels.forEach(function(c) { %>
@@ -24,7 +26,8 @@
     </select>
   </label>
 
-  <label>Salon TikTok
+  <label>
+    <span class="platform-badge platform-tiktok"><span class="dot"></span>TikTok</span> — salon de notification
     <select name="tiktok_channel">
       <option value="">Non configure</option>
       <% textChannels.forEach(function(c) { %>
@@ -33,7 +36,7 @@
     </select>
   </label>
 
-  <label>Role a mentionner
+  <label>Role a mentionner lors d'une notification
     <select name="ping_role">
       <option value="">Aucun</option>
       <% roles.forEach(function(r) { %>

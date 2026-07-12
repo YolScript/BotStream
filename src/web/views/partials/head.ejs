@@ -8,10 +8,11 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/">BotStream</a>
+    <a class="brand" href="/"><span class="logo-dot"></span> BotStream</a>
     <% if (typeof user !== 'undefined' && user) { %>
       <nav class="topnav">
         <span><%= user.username %></span>
+        <a href="/dashboard">Dashboard</a>
         <a href="/auth/logout">Deconnexion</a>
       </nav>
     <% } %>
