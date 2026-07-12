@@ -65,12 +65,10 @@ a { color: inherit; }
   letter-spacing: -0.01em;
 }
 
-.brand .logo-dot {
-  width: 10px;
-  height: 10px;
+.brand-logo {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
 }
 
 .topnav { display: flex; gap: 1.25rem; align-items: center; }
@@ -425,6 +423,8 @@ input:focus, select:focus {
   margin: 3rem auto;
   text-align: center;
 }
+
+.login-logo { width: 72px; height: 72px; margin-bottom: 1rem; }
 
 .login-wrap .tagline {
   color: var(--text-dim);
