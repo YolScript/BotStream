@@ -27,7 +27,7 @@ router.get('/discord/callback', async (req, res) => {
 
     req.session.user = {
       id: discordUser.id,
-      username: discordUser.username,
+      username: discordUser.global_name || discordUser.username,
       avatar: discordUser.avatar,
       manageableGuilds,
     };
