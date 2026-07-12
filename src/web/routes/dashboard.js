@@ -31,8 +31,7 @@ module.exports = function createDashboardRouter(client) {
   router.get('/:guildId', ensureGuildManage(client), (req, res) => {
     const cfg = guildConfigs.get(req.params.guildId);
     const streamerCount = streamersModel.listByGuild(req.params.guildId).length;
-    const subCount = subscriptionsModel.listByGuild(req.params.guildId).length;
-    res.render('guild', { guild: req.guild, cfg, streamerCount, subCount });
+    res.render('guild', { guild: req.guild, cfg, streamerCount });
   });
 
   router.get('/:guildId/config', ensureGuildManage(client), (req, res) => {
