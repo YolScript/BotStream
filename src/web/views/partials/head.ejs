@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BotStream</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">BotStream</a>
+    <% if (typeof user !== 'undefined' && user) { %>
+      <nav class="topnav">
+        <span><%= user.username %></span>
+        <a href="/auth/logout">Deconnexion</a>
+      </nav>
+    <% } %>
+  </header>
+  <main class="container">

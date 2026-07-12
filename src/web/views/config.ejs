@@ -1,0 +1,48 @@
+<%- include('partials/head') %>
+
+<p><a href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a></p>
+<h1>Configuration</h1>
+
+<% if (saved) { %><p class="flash flash-ok">Configuration enregistree.</p><% } %>
+
+<form class="card" method="post" action="/dashboard/<%= guild.id %>/config">
+  <label>Salon Twitch
+    <select name="twitch_channel">
+      <option value="">Non configure</option>
+      <% textChannels.forEach(function(c) { %>
+        <option value="<%= c.id %>" <%= cfg.twitch_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+      <% }) %>
+    </select>
+  </label>
+
+  <label>Salon YouTube
+    <select name="youtube_channel">
+      <option value="">Non configure</option>
+      <% textChannels.forEach(function(c) { %>
+        <option value="<%= c.id %>" <%= cfg.youtube_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+      <% }) %>
+    </select>
+  </label>
+
+  <label>Salon TikTok
+    <select name="tiktok_channel">
+      <option value="">Non configure</option>
+      <% textChannels.forEach(function(c) { %>
+        <option value="<%= c.id %>" <%= cfg.tiktok_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+      <% }) %>
+    </select>
+  </label>
+
+  <label>Role a mentionner
+    <select name="ping_role">
+      <option value="">Aucun</option>
+      <% roles.forEach(function(r) { %>
+        <option value="<%= r.id %>" <%= cfg.ping_role_id === r.id ? 'selected' : '' %>><%= r.name %></option>
+      <% }) %>
+    </select>
+  </label>
+
+  <button class="btn" type="submit">Enregistrer</button>
+</form>
+
+<%- include('partials/foot') %>

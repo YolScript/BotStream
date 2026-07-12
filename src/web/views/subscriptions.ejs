@@ -1,0 +1,51 @@
+<%- include('partials/head') %>
+
+<p><a href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a></p>
+<h1>Abonnements</h1>
+
+<% if (error) { %><p class="flash flash-error"><%= error %></p><% } %>
+
+<form class="card" method="post" action="/dashboard/<%= guild.id %>/subscriptions/add">
+  <label>ID Discord du membre
+    <input type="text" name="userId" required pattern="\d{17,20}" placeholder="ex: 123456789012345678" />
+  </label>
+  <label>Role
+    <select name="roleId" required>
+      <% roles.forEach(function(r) { %>
+        <option value="<%= r.id %>"><%= r.name %></option>
+      <% }) %>
+    </select>
+  </label>
+  <label>Duree en jours (vide = permanent)
+    <input type="number" name="days" min="1" />
+  </label>
+  <button class="btn" type="submit">Attribuer</button>
+</form>
+
+<table class="table">
+  <thead>
+    <tr><th>Membre</th><th>Role</th><th>Expiration</th><th></th></tr>
+  </thead>
+  <tbody>
+    <% subscriptions.forEach(function(s) { %>
+      <% const role = roles.find(function(r) { return r.id === s.role_id; }); %>
+      <tr>
+        <td><%= s.user_id %></td>
+        <td><%= role ? role.name : s.role_id %></td>
+        <td><%= s.expires_at ? s.expires_at + ' UTC' : 'Permanent' %></td>
+        <td>
+          <form method="post" action="/dashboard/<%= guild.id %>/subscriptions/remove">
+            <input type="hidden" name="userId" value="<%= s.user_id %>" />
+            <input type="hidden" name="roleId" value="<%= s.role_id %>" />
+            <button class="btn btn-danger" type="submit">Retirer</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+    <% if (subscriptions.length === 0) { %>
+      <tr><td colspan="4">Aucun abonnement actif.</td></tr>
+    <% } %>
+  </tbody>
+</table>
+
+<%- include('partials/foot') %>

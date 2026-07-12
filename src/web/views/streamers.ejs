@@ -1,0 +1,45 @@
+<%- include('partials/head') %>
+
+<p><a href="/dashboard/<%= guild.id %>">&larr; <%= guild.name %></a></p>
+<h1>Streamers suivis</h1>
+
+<% if (error) { %><p class="flash flash-error"><%= error %></p><% } %>
+
+<form class="card" method="post" action="/dashboard/<%= guild.id %>/streamers/add">
+  <label>Plateforme
+    <select name="platform">
+      <option value="twitch">Twitch</option>
+      <option value="youtube">YouTube</option>
+      <option value="tiktok">TikTok</option>
+    </select>
+  </label>
+  <label>Login / handle / ID
+    <input type="text" name="username" required placeholder="ex: ninja, @chaine ou UCxxxx" />
+  </label>
+  <button class="btn" type="submit">Ajouter</button>
+</form>
+
+<table class="table">
+  <thead>
+    <tr><th>Statut</th><th>Plateforme</th><th>Nom</th><th></th></tr>
+  </thead>
+  <tbody>
+    <% streamers.forEach(function(s) { %>
+      <tr>
+        <td><span class="badge <%= s.is_live ? 'badge-ok' : 'badge-off' %>"><%= s.is_live ? 'EN LIVE' : 'Hors ligne' %></span></td>
+        <td><%= s.platform %></td>
+        <td><%= s.display_name || s.username %></td>
+        <td>
+          <form method="post" action="/dashboard/<%= guild.id %>/streamers/<%= s.id %>/delete">
+            <button class="btn btn-danger" type="submit">Retirer</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+    <% if (streamers.length === 0) { %>
+      <tr><td colspan="4">Aucun streamer suivi.</td></tr>
+    <% } %>
+  </tbody>
+</table>
+
+<%- include('partials/foot') %>

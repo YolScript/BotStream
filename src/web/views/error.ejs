@@ -1,0 +1,12 @@
+<%- include('partials/head') %>
+
+<div class="card">
+  <h1>Oups</h1>
+  <p><%= message %></p>
+  <% if (typeof inviteUrl !== 'undefined' && inviteUrl) { %>
+    <a class="btn btn-discord" href="<%= inviteUrl %>">Inviter le bot sur ce serveur</a>
+  <% } %>
+  <p><a href="/dashboard">Retour au dashboard</a></p>
+</div>
+
+<%- include('partials/foot') %>

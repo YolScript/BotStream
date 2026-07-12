@@ -1,0 +1,22 @@
+<%- include('partials/head') %>
+
+<h1>Vos serveurs</h1>
+<div class="grid">
+  <% guilds.forEach(function(g) { %>
+    <div class="card guild-card">
+      <h2><%= g.name %></h2>
+      <% if (g.botPresent) { %>
+        <span class="badge badge-ok">Bot present</span>
+        <a class="btn" href="/dashboard/<%= g.id %>">Gerer</a>
+      <% } else { %>
+        <span class="badge badge-warn">Bot absent</span>
+        <a class="btn btn-discord" href="https://discord.com/oauth2/authorize?client_id=<%= clientId %>&scope=bot%20applications.commands&permissions=<%= invitePermissions %>&guild_id=<%= g.id %>">Inviter le bot</a>
+      <% } %>
+    </div>
+  <% }) %>
+  <% if (guilds.length === 0) { %>
+    <p>Aucun serveur ou vous avez les droits de gestion.</p>
+  <% } %>
+</div>
+
+<%- include('partials/foot') %>
