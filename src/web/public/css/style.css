@@ -433,15 +433,6 @@ input:focus, select:focus {
 
 .login-wrap .card { text-align: left; }
 
-.topgg-badge {
-  display: block;
-  margin-top: 1.5rem;
-}
-.topgg-badge img {
-  max-width: 100%;
-  height: auto;
-}
-
 /* ---------- Misc ---------- */
 
 .muted { color: var(--text-dim); font-size: 0.85rem; }
