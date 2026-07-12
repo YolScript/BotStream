@@ -4,6 +4,7 @@ const { ensureAuthenticated, ensureGuildManage } = require('../middleware/auth')
 const guildConfigs = require('../../database/models/guildConfigs');
 const streamersModel = require('../../database/models/streamers');
 const subscriptionsModel = require('../../database/models/subscriptions');
+const roleRulesModel = require('../../database/models/roleRules');
 const twitch = require('../../services/twitch');
 const youtube = require('../../services/youtube');
 const config = require('../../config');
@@ -106,6 +107,39 @@ module.exports = function createDashboardRouter(client) {
   router.post('/:guildId/streamers/:id/delete', ensureGuildManage(client), (req, res) => {
     streamersModel.removeById(req.params.id, req.params.guildId);
     res.redirect(`/dashboard/${req.params.guildId}/streamers`);
+  });
+
+  router.get('/:guildId/streamers/:id/roles', ensureGuildManage(client), (req, res) => {
+    const streamer = streamersModel.getById(req.params.id);
+    if (!streamer || streamer.guild_id !== req.params.guildId) {
+      return res.status(404).render('error', { message: 'Streamer introuvable.' });
+    }
+    if (streamer.platform === 'tiktok') {
+      return res.status(400).render('error', { message: 'Pas de roles automatiques disponibles pour TikTok.' });
+    }
+
+    const rules = roleRulesModel.listByStreamer(streamer.id);
+    const rulesByType = Object.fromEntries(rules.map((r) => [r.rule_type, r.role_id]));
+    const roles = [...req.guild.roles.cache.values()].filter((r) => r.id !== req.guild.id);
+    res.render('streamerRoles', { guild: req.guild, streamer, rulesByType, roles, saved: req.query.saved === '1' });
+  });
+
+  router.post('/:guildId/streamers/:id/roles', ensureGuildManage(client), (req, res) => {
+    const streamer = streamersModel.getById(req.params.id);
+    if (!streamer || streamer.guild_id !== req.params.guildId) {
+      return res.status(404).render('error', { message: 'Streamer introuvable.' });
+    }
+
+    const ruleTypes =
+      streamer.platform === 'twitch' ? ['follow', 'sub_tier1', 'sub_tier2', 'sub_tier3'] : ['yt_subscriber', 'yt_member'];
+
+    for (const ruleType of ruleTypes) {
+      const roleId = req.body[ruleType];
+      if (roleId && !req.guild.roles.cache.has(roleId)) continue;
+      roleRulesModel.set(streamer.id, ruleType, roleId || null);
+    }
+
+    res.redirect(`/dashboard/${req.params.guildId}/streamers/${req.params.id}/roles?saved=1`);
   });
 
   router.get('/:guildId/subscriptions', ensureGuildManage(client), (req, res) => {

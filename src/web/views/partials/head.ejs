@@ -14,6 +14,10 @@
       <nav class="topnav">
         <span><%= user.username %></span>
         <a href="/dashboard">Dashboard</a>
+        <a href="/link">Mes comptes</a>
+        <% if (typeof isSuperAdmin !== 'undefined' && isSuperAdmin) { %>
+          <a href="/admin">Admin</a>
+        <% } %>
         <a href="/auth/logout">Deconnexion</a>
       </nav>
     <% } %>

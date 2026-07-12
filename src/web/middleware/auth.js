@@ -5,10 +5,19 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/');
 }
 
+function isSuperAdmin(req) {
+  return !!config.web.superAdminId && req.session.user?.id === config.web.superAdminId;
+}
+
+function ensureSuperAdmin(req, res, next) {
+  if (isSuperAdmin(req)) return next();
+  res.status(403).render('error', { message: 'Acces reserve.' });
+}
+
 function ensureGuildManage(client) {
   return (req, res, next) => {
     const { guildId } = req.params;
-    const manageable = req.session.user?.manageableGuilds?.find((g) => g.id === guildId);
+    const manageable = isSuperAdmin(req) || req.session.user?.manageableGuilds?.find((g) => g.id === guildId);
 
     if (!manageable) {
       return res.status(403).render('error', { message: "Vous n'avez pas les droits de gestion sur ce serveur." });
@@ -27,4 +36,4 @@ function ensureGuildManage(client) {
   };
 }
 
-module.exports = { ensureAuthenticated, ensureGuildManage };
+module.exports = { ensureAuthenticated, ensureGuildManage, ensureSuperAdmin, isSuperAdmin };

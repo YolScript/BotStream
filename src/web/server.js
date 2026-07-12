@@ -6,6 +6,9 @@ const SQLiteStore = require('./sessionStore');
 const authRoutes = require('./routes/auth');
 const createPlatformAuthRouter = require('./routes/platformAuth');
 const createDashboardRouter = require('./routes/dashboard');
+const createAdminRouter = require('./routes/admin');
+const createLinkRouter = require('./routes/linkAccount');
+const { isSuperAdmin } = require('./middleware/auth');
 
 function createServer(client) {
   const app = express();
@@ -27,6 +30,7 @@ function createServer(client) {
 
   app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
+    res.locals.isSuperAdmin = isSuperAdmin(req);
     next();
   });
 
@@ -38,6 +42,8 @@ function createServer(client) {
   app.use('/auth', authRoutes);
   app.use('/auth', createPlatformAuthRouter(client));
   app.use('/dashboard', createDashboardRouter(client));
+  app.use('/admin', createAdminRouter(client));
+  app.use('/link', createLinkRouter());
 
   app.use((req, res) => {
     res.status(404).render('error', { message: 'Page introuvable.' });

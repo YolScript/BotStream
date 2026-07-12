@@ -31,11 +31,13 @@ module.exports = {
     publicUrl: process.env.PUBLIC_URL || 'http://localhost:3000',
     port: parseInt(process.env.PORT, 10) || 3000,
     sessionSecret: process.env.SESSION_SECRET || 'insecure-dev-secret',
+    superAdminId: process.env.SUPER_ADMIN_DISCORD_ID || null,
   },
   polling: {
     twitchMs: parseInt(process.env.TWITCH_POLL_INTERVAL_MS, 10) || 60000,
     youtubeMs: parseInt(process.env.YOUTUBE_POLL_INTERVAL_MS, 10) || 90000,
     tiktokMs: parseInt(process.env.TIKTOK_POLL_INTERVAL_MS, 10) || 90000,
     subscriptionCheckMs: parseInt(process.env.SUBSCRIPTION_CHECK_INTERVAL_MS, 10) || 300000,
+    roleSyncMs: parseInt(process.env.ROLE_SYNC_INTERVAL_MS, 10) || 600000,
   },
 };

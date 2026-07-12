@@ -1,0 +1,43 @@
+<%- include('partials/head') %>
+
+<h1>Panel admin</h1>
+<p class="muted"><%= guilds.length %> serveur(s) ou le bot est present.</p>
+
+<table class="table">
+  <thead>
+    <tr><th>Serveur</th><th>ID</th><th>Membres</th><th>Streamers suivis</th><th></th></tr>
+  </thead>
+  <tbody>
+    <% guilds.forEach(function(g) { %>
+      <tr>
+        <td>
+          <div class="guild-head">
+            <% if (g.icon) { %>
+              <img class="guild-icon" style="width:28px;height:28px" src="https://cdn.discordapp.com/icons/<%= g.id %>/<%= g.icon %>.png?size=64" alt="" />
+            <% } else { %>
+              <div class="guild-icon-fallback" style="width:28px;height:28px;font-size:0.8rem"><%= g.name.charAt(0).toUpperCase() %></div>
+            <% } %>
+            <%= g.name %>
+          </div>
+        </td>
+        <td class="muted"><%= g.id %></td>
+        <td><%= g.memberCount %></td>
+        <td>
+          <% if (g.streamers.length === 0) { %>
+            <span class="muted">Aucun</span>
+          <% } else { %>
+            <% g.streamers.forEach(function(s) { %>
+              <span class="platform-badge platform-<%= s.platform %>" style="margin: 0 0.3rem 0.3rem 0"><span class="dot"></span><%= s.display_name || s.username %></span>
+            <% }) %>
+          <% } %>
+        </td>
+        <td><a class="btn btn-sm" href="/dashboard/<%= g.id %>">Gerer</a></td>
+      </tr>
+    <% }) %>
+    <% if (guilds.length === 0) { %>
+      <tr><td colspan="5" class="muted">Le bot n'est present sur aucun serveur.</td></tr>
+    <% } %>
+  </tbody>
+</table>
+
+<%- include('partials/foot') %>

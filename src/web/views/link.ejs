@@ -1,0 +1,30 @@
+<%- include('partials/head') %>
+
+<h1>Lier mes comptes</h1>
+<p class="muted">Lie ton compte Twitch et/ou YouTube pour recevoir automatiquement les roles associes (follow, abonnement, membership) sur les serveurs qui les ont configures.</p>
+
+<% if (connected) { %><p class="flash flash-ok">Compte <%= connected %> lie avec succes.</p><% } %>
+
+<div class="connect-row">
+  <a class="connect-tile tw" href="/link/twitch">
+    <div class="badge-icon bg-twitch">T</div>
+    <strong>Twitch</strong>
+    <% if (twitchLink) { %>
+      <span>Lie : <%= twitchLink.platform_username %></span>
+    <% } else { %>
+      <span>Se connecter avec Twitch</span>
+    <% } %>
+  </a>
+
+  <a class="connect-tile yt" href="/link/google">
+    <div class="badge-icon bg-youtube">Y</div>
+    <strong>YouTube</strong>
+    <% if (youtubeLink) { %>
+      <span>Lie : <%= youtubeLink.platform_username %></span>
+    <% } else { %>
+      <span>Se connecter avec Google</span>
+    <% } %>
+  </a>
+</div>
+
+<%- include('partials/foot') %>

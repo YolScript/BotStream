@@ -59,7 +59,10 @@
         <td><span class="platform-badge platform-<%= s.platform %>"><span class="dot"></span><%= s.platform %></span></td>
         <td><%= s.display_name || s.username %></td>
         <td>
-          <form method="post" action="/dashboard/<%= guild.id %>/streamers/<%= s.id %>/delete">
+          <% if (s.platform !== 'tiktok') { %>
+            <a class="btn btn-outline btn-sm" href="/dashboard/<%= guild.id %>/streamers/<%= s.id %>/roles">Roles</a>
+          <% } %>
+          <form method="post" action="/dashboard/<%= guild.id %>/streamers/<%= s.id %>/delete" style="display: inline">
             <button class="btn btn-danger btn-sm" type="submit">Retirer</button>
           </form>
         </td>

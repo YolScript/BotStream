@@ -1,11 +1,9 @@
 const db = require('../db');
+const { sqliteDatetimeInDays } = require('../../services/timeUtil');
 
-// Format identique a celui retourne par SQLite datetime('now') (UTC, sans 'T' ni ms)
-// afin que les comparaisons textuelles expires_at <= datetime('now') restent correctes.
 function expiresAtFromDays(days) {
   if (!days) return null;
-  const date = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-  return date.toISOString().slice(0, 19).replace('T', ' ');
+  return sqliteDatetimeInDays(days);
 }
 
 function add(guildId, userId, roleId, expiresAt = null) {

@@ -5,6 +5,7 @@ const twitch = require('./twitch');
 const youtube = require('./youtube');
 const tiktok = require('./tiktok');
 const { sendLiveNotification } = require('./notifier');
+const roleSync = require('./roleSync');
 
 async function pollTwitch(client) {
   if (!config.twitch.clientId || !config.twitch.clientSecret) return;
@@ -120,6 +121,7 @@ function start(client) {
   loopForever(() => pollYouTube(client), config.polling.youtubeMs);
   loopForever(() => pollTikTok(client), config.polling.tiktokMs);
   loopForever(() => checkExpiredSubscriptions(client), config.polling.subscriptionCheckMs);
+  loopForever(() => roleSync.syncAllGuilds(client), config.polling.roleSyncMs);
 }
 
 module.exports = { start };

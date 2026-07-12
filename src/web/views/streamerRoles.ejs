@@ -1,0 +1,77 @@
+<%- include('partials/head') %>
+
+<a class="breadcrumb" href="/dashboard/<%= guild.id %>/streamers">&larr; Streamers</a>
+<h1>Roles automatiques — <%= streamer.display_name || streamer.username %></h1>
+
+<% if (saved) { %><p class="flash flash-ok">Roles enregistres.</p><% } %>
+
+<% if (!streamer.oauth_access_token) { %>
+  <p class="flash flash-error">
+    Ce streamer n'a pas encore autorise les permissions etendues (follows/abonnements).
+    Reconnecte-le via le bouton "Se connecter avec <%= streamer.platform === 'twitch' ? 'Twitch' : 'Google' %>"
+    sur la page Streamers pour que ces roles fonctionnent.
+  </p>
+<% } %>
+
+<p class="muted">
+  Chaque membre doit lier son propre compte <%= streamer.platform === 'twitch' ? 'Twitch' : 'YouTube' %> avec
+  <code>/link <%= streamer.platform %></code> pour que la verification fonctionne.
+</p>
+
+<form class="card" method="post" action="/dashboard/<%= guild.id %>/streamers/<%= streamer.id %>/roles">
+  <% if (streamer.platform === 'twitch') { %>
+    <label>Follow (suit la chaine)
+      <select name="follow">
+        <option value="">Aucun</option>
+        <% roles.forEach(function(r) { %>
+          <option value="<%= r.id %>" <%= rulesByType.follow === r.id ? 'selected' : '' %>><%= r.name %></option>
+        <% }) %>
+      </select>
+    </label>
+    <label>Abonne Tier 1
+      <select name="sub_tier1">
+        <option value="">Aucun</option>
+        <% roles.forEach(function(r) { %>
+          <option value="<%= r.id %>" <%= rulesByType.sub_tier1 === r.id ? 'selected' : '' %>><%= r.name %></option>
+        <% }) %>
+      </select>
+    </label>
+    <label>Abonne Tier 2
+      <select name="sub_tier2">
+        <option value="">Aucun</option>
+        <% roles.forEach(function(r) { %>
+          <option value="<%= r.id %>" <%= rulesByType.sub_tier2 === r.id ? 'selected' : '' %>><%= r.name %></option>
+        <% }) %>
+      </select>
+    </label>
+    <label>Abonne Tier 3
+      <select name="sub_tier3">
+        <option value="">Aucun</option>
+        <% roles.forEach(function(r) { %>
+          <option value="<%= r.id %>" <%= rulesByType.sub_tier3 === r.id ? 'selected' : '' %>><%= r.name %></option>
+        <% }) %>
+      </select>
+    </label>
+  <% } else { %>
+    <label>Abonne (gratuit)
+      <select name="yt_subscriber">
+        <option value="">Aucun</option>
+        <% roles.forEach(function(r) { %>
+          <option value="<%= r.id %>" <%= rulesByType.yt_subscriber === r.id ? 'selected' : '' %>><%= r.name %></option>
+        <% }) %>
+      </select>
+    </label>
+    <label>Membre (paiement, tous paliers confondus)
+      <select name="yt_member">
+        <option value="">Aucun</option>
+        <% roles.forEach(function(r) { %>
+          <option value="<%= r.id %>" <%= rulesByType.yt_member === r.id ? 'selected' : '' %>><%= r.name %></option>
+        <% }) %>
+      </select>
+    </label>
+  <% } %>
+
+  <button class="btn" type="submit">Enregistrer</button>
+</form>
+
+<%- include('partials/foot') %>

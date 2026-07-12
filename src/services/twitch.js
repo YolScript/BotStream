@@ -46,4 +46,30 @@ async function getStreamsByLogins(logins) {
   return helixGet('streams', { user_login: logins });
 }
 
-module.exports = { getAppAccessToken, getUsersByLogin, getStreamsByLogins };
+// Necessite le token du STREAMER (scope moderator:read:followers, broadcaster_id = son propre ID).
+async function isFollowing(streamerAccessToken, broadcasterId, userId) {
+  const res = await axios.get('https://api.twitch.tv/helix/channels/followers', {
+    headers: { 'Client-Id': config.twitch.clientId, Authorization: `Bearer ${streamerAccessToken}` },
+    params: { broadcaster_id: broadcasterId, user_id: userId },
+  });
+  return res.data.data.length > 0;
+}
+
+// Necessite le token du STREAMER (scope channel:read:subscriptions, broadcaster_id = son propre ID).
+// Retourne le tier (1, 2 ou 3) ou null si non abonne.
+async function getSubscriptionTier(streamerAccessToken, broadcasterId, userId) {
+  try {
+    const res = await axios.get('https://api.twitch.tv/helix/subscriptions', {
+      headers: { 'Client-Id': config.twitch.clientId, Authorization: `Bearer ${streamerAccessToken}` },
+      params: { broadcaster_id: broadcasterId, user_id: userId },
+    });
+    const sub = res.data.data[0];
+    if (!sub) return null;
+    return Math.round(parseInt(sub.tier, 10) / 1000);
+  } catch (err) {
+    if (err.response?.status === 404) return null;
+    throw err;
+  }
+}
+
+module.exports = { getAppAccessToken, getUsersByLogin, getStreamsByLogins, isFollowing, getSubscriptionTier };

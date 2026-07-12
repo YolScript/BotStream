@@ -12,6 +12,9 @@ Bot Discord de notifications de live (Twitch / YouTube / TikTok) avec panel web 
 - Panel web (login via Discord OAuth2) pour gerer la configuration, les streamers suivis et les abonnements sans passer par Discord.
 - Connexion directe Twitch/YouTube (OAuth2) pour ajouter un streamer suivi : pas de saisie manuelle, le compte est verifie et lie automatiquement.
 - Abonnements avec attribution de role, duree optionnelle et retrait automatique a expiration.
+- **Roles automatiques selon follow/abonnement/membership** : chaque membre lie son propre compte Twitch/YouTube (`/link`), le bot verifie periodiquement son statut (follow, sub Tier 1/2/3 sur Twitch ; abonne/membre sur YouTube) et attribue/retire les roles configures par streamer.
+- Message prive automatique de bienvenue expliquant comment lier ses comptes.
+- Panel admin (reserve a un seul compte Discord) listant tous les serveurs ou le bot est present et les streamers configures sur chacun.
 
 ## Prerequis
 
@@ -39,6 +42,8 @@ Remplir `.env` :
 | `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` | Application Twitch (facultatif, desactive le polling + le bouton "Connecter Twitch" si absent) |
 | `YOUTUBE_API_KEY` | Cle API YouTube Data v3 (facultatif, desactive le polling YouTube si absente) |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | App OAuth2 Google, pour le bouton "Connecter YouTube" (facultatif, voir ci-dessous) |
+| `SUPER_ADMIN_DISCORD_ID` | ID Discord du seul compte pouvant voir le panel `/admin` (facultatif) |
+| `ROLE_SYNC_INTERVAL_MS` | Intervalle de verification des roles follow/abonnement/membership, en ms (defaut 600000 = 10 min) |
 | `DEV_GUILD_ID` | ID d'un serveur de test pour deployer les commandes instantanement (facultatif) |
 
 Dans le portail Discord Developer, activer l'intent privilegie **Server Members Intent** (onglet Bot), necessaire pour l'attribution/retrait de roles.
@@ -48,6 +53,8 @@ Dans le portail OAuth2 Discord, ajouter comme Redirect URI : `<PUBLIC_URL>/auth/
 Dans la console Twitch, ajouter comme OAuth Redirect URL : `<PUBLIC_URL>/auth/twitch/callback` (meme Client ID/Secret que celui deja utilise pour le polling).
 
 Pour le bouton "Connecter YouTube" (facultatif) : creer une app OAuth2 dans Google Cloud Console (APIs & Services > Credentials > Create OAuth Client ID > Web application), activer l'API YouTube Data v3, ajouter `<PUBLIC_URL>/auth/google/callback` comme Redirect URI autorisee. Sans ces variables, le bouton YouTube reste desactive sur le panel (l'ajout manuel du handle/ID reste possible).
+
+> Pour les roles automatiques (follow/abonnement/membership), quand un streamer se connecte via le bouton "Se connecter avec Twitch/YouTube" pour etre ajoute au suivi, BotStream demande des permissions etendues (lecture des follows/abonnements Twitch, des membres payants YouTube). C'est normal et necessaire : sans ca, la page "Roles" de ce streamer ne pourra pas verifier ses viewers.
 
 ## Lancement
 
@@ -78,20 +85,27 @@ https://discord.com/oauth2/authorize?client_id=<DISCORD_CLIENT_ID>&scope=bot%20a
 - `/sub remove membre role` — retire un abonnement et le role associe.
 - `/sub list` — liste les abonnements actifs.
 - `/panel` — renvoie le lien direct vers le panel web pour ce serveur.
+- `/link twitch` / `/link youtube` — lie ton propre compte Twitch/YouTube (necessaire pour les roles automatiques).
+- `/test-dm` — teste que le bot peut t'envoyer un message prive.
 
 ## Panel web
 
 Connexion via Discord OAuth2. Affiche les serveurs ou l'utilisateur a la permission "Gerer le serveur", avec pour chacun :
 
 - **Configuration** : salons de notification + role mentionne.
-- **Streamers** : connexion directe Twitch/YouTube (OAuth2, sans saisie manuelle) ou ajout manuel (pseudo, utile pour suivre un streamer autre que soi-meme) ; retrait, statut live en direct.
+- **Streamers** : connexion directe Twitch/YouTube (OAuth2, sans saisie manuelle) ou ajout manuel (pseudo, utile pour suivre un streamer autre que soi-meme) ; retrait, statut live en direct ; page "Roles" par streamer pour configurer follow/Tier1/2/3 (Twitch) ou abonne/membre (YouTube).
 - **Abonnements** : attribution/retrait de roles avec expiration, vue d'ensemble des abonnements actifs.
+- **Mes comptes** (`/link`, accessible a tout membre connecte) : lier son compte Twitch/YouTube personnel.
+- **Admin** (reserve a `SUPER_ADMIN_DISCORD_ID`) : liste de tous les serveurs ou le bot est present, avec les streamers configures sur chacun.
 
 ## Limites connues
 
 - La detection TikTok repose sur du scraping non officiel (TikTok n'expose aucune API publique de live) : elle peut casser si TikTok modifie la structure de sa page. Voir `src/services/tiktok.js`.
 - Twitch et YouTube sont interroges par polling (intervalle configurable via `.env`), pas de push temps reel (EventSub webhook/websocket non implemente pour rester simple a auto-heberger).
 - Le panel utilise un stockage de session SQLite maison (`src/web/sessionStore.js`) : un seul processus Node a la fois (pas de scaling horizontal sans changer de store).
+- Les tokens OAuth (streamers et membres lies) sont stockes en clair dans la base SQLite, comme le reste des donnees. Pas de chiffrement au repos : suffisant pour un bot self-host, a garder en tete si le fichier de base venait a fuiter.
+- Un compte Twitch/YouTube lie via `/link` est global (un compte Discord = un seul compte Twitch/YouTube lie, valable sur tous les serveurs communs avec le bot), pas par serveur.
+- YouTube "membership" n'a pas de paliers standardises comme les Tiers Twitch (chaque createur nomme ses propres paliers) : un seul role "Membre" est propose, tous paliers confondus.
 
 ## Structure du projet
 
@@ -99,8 +113,8 @@ Connexion via Discord OAuth2. Affiche les serveurs ou l'utilisateur a la permiss
 src/
   config.js              Chargement de la configuration (.env)
   index.js                Point d'entree : demarre le bot et le serveur web
-  database/               SQLite (node:sqlite) + modeles (guildConfigs, streamers, subscriptions)
-  discord/                Client discord.js, evenements, commandes slash
-  services/               Twitch (Helix), YouTube (Data API v3), TikTok (scraping), notifier, scheduler
-  web/                     Serveur Express, OAuth2 Discord, routes, vues EJS
+  database/               SQLite (node:sqlite) + modeles (guildConfigs, streamers, subscriptions, platformLinks, roleRules)
+  discord/                Client discord.js, evenements (dont guildMemberAdd), commandes slash
+  services/               Twitch (Helix), YouTube (Data API v3), TikTok (scraping), notifier, scheduler, roleSync
+  web/                     Serveur Express, OAuth2 Discord/Twitch/Google, routes (dashboard, admin, link), vues EJS
 ```
