@@ -443,18 +443,23 @@ input:focus, select:focus {
 
 .site-footer {
   display: flex;
-  justify-content: center;
-  gap: 1.5rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   padding: 1.5rem;
   border-top: 1px solid var(--border-soft);
 }
 
-.site-footer a {
+.site-footer-links { display: flex; gap: 1.5rem; }
+
+.site-footer-links a {
   color: var(--text-faint);
   text-decoration: none;
   font-size: 0.8rem;
 }
-.site-footer a:hover { color: var(--text-dim); }
+.site-footer-links a:hover { color: var(--text-dim); }
+
+.topgg-badge img { max-width: 100%; height: auto; }
 
 @media (max-width: 640px) {
   .container { padding: 1.5rem 1rem 3rem; }
