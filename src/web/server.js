@@ -39,6 +39,9 @@ function createServer(client) {
     res.render('login');
   });
 
+  app.get('/terms', (req, res) => res.render('terms'));
+  app.get('/privacy', (req, res) => res.render('privacy'));
+
   app.use('/auth', authRoutes);
   app.use('/auth', createPlatformAuthRouter(client));
   app.use('/dashboard', createDashboardRouter(client));

@@ -1,0 +1,28 @@
+<%- include('partials/head') %>
+
+<a class="breadcrumb" href="/">&larr; Retour</a>
+<h1>Conditions d'utilisation</h1>
+
+<div class="card">
+  <p class="muted">Derniere mise a jour : <%= new Date().toLocaleDateString('fr-FR') %></p>
+
+  <h2>1. Objet</h2>
+  <p>BotStream est un bot Discord qui envoie des notifications de live (Twitch, YouTube, TikTok) et attribue automatiquement des roles Discord selon le statut d'abonnement/follow d'un membre sur ces plateformes.</p>
+
+  <h2>2. Utilisation</h2>
+  <p>En invitant le bot sur un serveur ou en connectant un compte Twitch/YouTube via le panel, vous acceptez que BotStream accede aux informations necessaires a son fonctionnement (voir la <a href="/privacy">Politique de confidentialite</a>).</p>
+
+  <h2>3. Disponibilite</h2>
+  <p>Le service est fourni "en l'etat", sans garantie de disponibilite continue. Les notifications dependent de la disponibilite des API tierces (Discord, Twitch, YouTube) et peuvent etre retardees ou interrompues en cas de panne de ces services.</p>
+
+  <h2>4. Usage abusif</h2>
+  <p>Toute tentative d'exploitation, de contournement des limites techniques ou d'utilisation du bot a des fins malveillantes peut entrainer le retrait du bot du serveur concerne.</p>
+
+  <h2>5. Modifications</h2>
+  <p>Ces conditions peuvent evoluer. La version en vigueur est celle publiee sur cette page.</p>
+
+  <h2>6. Contact</h2>
+  <p>Pour toute question, contacte l'administrateur du serveur Discord sur lequel BotStream est installe.</p>
+</div>
+
+<%- include('partials/foot') %>

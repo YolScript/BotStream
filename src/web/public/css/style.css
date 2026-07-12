@@ -441,6 +441,21 @@ input:focus, select:focus {
 .stat strong { font-size: 1.4rem; }
 .stat span { color: var(--text-dim); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
 
+.site-footer {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.site-footer a {
+  color: var(--text-faint);
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+.site-footer a:hover { color: var(--text-dim); }
+
 @media (max-width: 640px) {
   .container { padding: 1.5rem 1rem 3rem; }
   .topbar { padding: 1rem; }

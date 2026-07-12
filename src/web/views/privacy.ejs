@@ -1,0 +1,44 @@
+<%- include('partials/head') %>
+
+<a class="breadcrumb" href="/">&larr; Retour</a>
+<h1>Politique de confidentialite</h1>
+
+<div class="card">
+  <p class="muted">Derniere mise a jour : <%= new Date().toLocaleDateString('fr-FR') %></p>
+
+  <h2>1. Donnees collectees</h2>
+  <p>BotStream collecte uniquement les donnees necessaires a son fonctionnement :</p>
+  <ul>
+    <li><strong>Discord</strong> : identifiant utilisateur, pseudo, avatar, et la liste des serveurs geres (via la connexion OAuth2) ; identifiants des serveurs/salons/roles configures.</li>
+    <li><strong>Twitch</strong> (si un streamer ou un membre connecte son compte) : identifiant, pseudo, et un jeton d'acces OAuth utilise pour vérifier les follows/abonnements.</li>
+    <li><strong>YouTube / Google</strong> (si un streamer ou un membre connecte son compte) : identifiant de chaine, nom de chaine, et un jeton d'acces OAuth utilise pour verifier les abonnements/memberships.</li>
+  </ul>
+
+  <h2>2. Utilisation des donnees</h2>
+  <p>Ces donnees servent exclusivement a :</p>
+  <ul>
+    <li>Afficher les serveurs que tu geres dans le panel.</li>
+    <li>Envoyer les notifications de live dans les salons configures.</li>
+    <li>Verifier periodiquement le statut follow/abonnement/membership et attribuer ou retirer les roles Discord correspondants.</li>
+  </ul>
+  <p>Aucune donnee n'est vendue, partagee ou utilisee a des fins publicitaires.</p>
+
+  <h2>3. Stockage</h2>
+  <p>Les donnees sont stockees dans une base de donnees privee associee a l'instance du bot. Les jetons OAuth sont conserves tant que le compte reste connecte ou que le streamer reste suivi.</p>
+
+  <h2>4. Suppression de tes donnees</h2>
+  <p>Tu peux a tout moment :</p>
+  <ul>
+    <li>Retirer le bot de ton serveur Discord (supprime la configuration du serveur).</li>
+    <li>Revoquer l'acces de BotStream depuis les parametres de ton compte Discord, Twitch ou Google — cela invalide immediatement le jeton associe.</li>
+    <li>Demander la suppression de tes donnees a l'administrateur du serveur Discord concerne.</li>
+  </ul>
+
+  <h2>5. Services tiers</h2>
+  <p>BotStream communique avec les API officielles Discord, Twitch et Google (YouTube) pour fournir ses fonctionnalites. Consulte leurs propres politiques de confidentialite pour savoir comment ils traitent tes donnees de leur cote.</p>
+
+  <h2>6. Contact</h2>
+  <p>Pour toute question relative a tes donnees, contacte l'administrateur du serveur Discord sur lequel BotStream est installe.</p>
+</div>
+
+<%- include('partials/foot') %>
