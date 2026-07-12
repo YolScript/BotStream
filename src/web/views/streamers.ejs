@@ -42,26 +42,17 @@
     <div class="connect-tile tt" style="opacity: 0.5">
       <div class="badge-icon bg-tiktok">TT</div>
       <strong>TikTok</strong>
-      <span>Pas de connexion officielle : ajout manuel ci-dessous</span>
+      <span>Pas de connexion officielle : ajoute le pseudo ci-dessous</span>
     </div>
   </div>
 
-  <details class="manual-add">
-    <summary>Ajouter manuellement (pseudo, sans connexion — utile pour suivre un streamer qui n'est pas toi)</summary>
-    <form method="post" action="/dashboard/<%= guild.id %>/streamers/add">
-      <label>Plateforme
-        <select name="platform">
-          <option value="twitch">Twitch</option>
-          <option value="youtube">YouTube</option>
-          <option value="tiktok">TikTok</option>
-        </select>
-      </label>
-      <label>Login / handle / ID
-        <input type="text" name="username" required placeholder="ex: ninja, @chaine ou UCxxxx" />
-      </label>
-      <button class="btn" type="submit">Ajouter</button>
-    </form>
-  </details>
+  <form method="post" action="/dashboard/<%= guild.id %>/streamers/add">
+    <input type="hidden" name="platform" value="tiktok" />
+    <label>Pseudo TikTok
+      <input type="text" name="username" required placeholder="ex: charlidamelio" />
+    </label>
+    <button class="btn btn-tiktok" type="submit">Ajouter ce compte TikTok</button>
+  </form>
 </div>
 
 <table class="table">

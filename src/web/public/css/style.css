@@ -368,14 +368,6 @@ input:focus, select:focus {
   background: var(--border-soft);
 }
 
-details.manual-add summary {
-  cursor: pointer;
-  color: var(--text-dim);
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-}
-details.manual-add summary:hover { color: var(--text); }
-
 /* ---------- Table ---------- */
 
 .table {
