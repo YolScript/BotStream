@@ -42,7 +42,15 @@ module.exports = function createDashboardRouter(client) {
   });
 
   router.post('/:guildId/config', ensureGuildManage(client), (req, res) => {
-    const { twitch_channel, youtube_channel, tiktok_channel, ping_role } = req.body;
+    const {
+      twitch_channel,
+      youtube_channel,
+      tiktok_channel,
+      twitch_clips_channel,
+      youtube_videos_channel,
+      tiktok_videos_channel,
+      ping_role,
+    } = req.body;
 
     for (const [platform, channelId] of [
       ['twitch', twitch_channel],
@@ -52,6 +60,16 @@ module.exports = function createDashboardRouter(client) {
       if (!channelId) continue;
       if (!req.guild.channels.cache.has(channelId)) continue;
       guildConfigs.setChannel(req.params.guildId, platform, channelId);
+    }
+
+    for (const [platform, channelId] of [
+      ['twitch', twitch_clips_channel],
+      ['youtube', youtube_videos_channel],
+      ['tiktok', tiktok_videos_channel],
+    ]) {
+      if (!channelId) continue;
+      if (!req.guild.channels.cache.has(channelId)) continue;
+      guildConfigs.setContentChannel(req.params.guildId, platform, channelId);
     }
 
     if (ping_role && req.guild.roles.cache.has(ping_role)) {

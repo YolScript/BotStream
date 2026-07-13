@@ -7,7 +7,8 @@ Bot Discord de notifications de live (Twitch / YouTube / TikTok) avec panel web 
 ## Fonctionnalites
 
 - Notifications automatiques quand un streamer suivi passe en live sur Twitch, YouTube ou TikTok (embed avec titre, vignette, lien direct).
-- Configuration par serveur : salon de notification par plateforme + role a mentionner.
+- Notifications automatiques pour les nouveaux clips Twitch et les nouvelles videos YouTube/TikTok publiees par un streamer suivi.
+- Configuration par serveur : salon de notification par plateforme (live + contenu) + role a mentionner.
 - Commandes slash : `/config`, `/streamer`, `/sub`, `/panel`.
 - Panel web (login via Discord OAuth2) pour gerer la configuration, les streamers suivis et les abonnements sans passer par Discord.
 - Connexion directe Twitch/YouTube (OAuth2) pour ajouter un streamer suivi : pas de saisie manuelle, le compte est verifie et lie automatiquement.
@@ -75,8 +76,9 @@ https://discord.com/oauth2/authorize?client_id=<DISCORD_CLIENT_ID>&scope=bot%20a
 
 ## Commandes slash
 
-- `/config channel plateforme:<twitch|youtube|tiktok> salon:#salon` — definit le salon de notification.
-- `/config role role:@role` — role mentionne lors d'une notification de live.
+- `/config channel plateforme:<twitch|youtube|tiktok> salon:#salon` — definit le salon de notification de live.
+- `/config content plateforme:<twitch|youtube|tiktok> salon:#salon` — definit le salon pour les clips Twitch / nouvelles videos YouTube et TikTok (si non defini, repli sur le salon de live).
+- `/config role role:@role` — role mentionne lors d'une notification.
 - `/config show` — affiche la configuration actuelle.
 - `/streamer add plateforme nom` — suit un nouveau streamer (login Twitch, handle/ID YouTube, pseudo TikTok).
 - `/streamer remove plateforme nom` — retire un streamer suivi.
@@ -92,7 +94,7 @@ https://discord.com/oauth2/authorize?client_id=<DISCORD_CLIENT_ID>&scope=bot%20a
 
 Connexion via Discord OAuth2. Affiche les serveurs ou l'utilisateur a la permission "Gerer le serveur", avec pour chacun :
 
-- **Configuration** : salons de notification + role mentionne.
+- **Configuration** : salons de notification (live + contenu) + role mentionne.
 - **Streamers** : connexion directe Twitch/YouTube (OAuth2, sans saisie manuelle) ou ajout manuel (pseudo, utile pour suivre un streamer autre que soi-meme) ; retrait, statut live en direct ; page "Roles" par streamer pour configurer follow/Tier1/2/3 (Twitch) ou abonne/membre (YouTube).
 - **Abonnements** : attribution/retrait de roles avec expiration, vue d'ensemble des abonnements actifs.
 - **Mes comptes** (`/link`, accessible a tout membre connecte) : lier son compte Twitch/YouTube personnel.
@@ -102,6 +104,7 @@ Connexion via Discord OAuth2. Affiche les serveurs ou l'utilisateur a la permiss
 
 - La detection TikTok repose sur du scraping non officiel (TikTok n'expose aucune API publique de live) : elle peut casser si TikTok modifie la structure de sa page. Voir `src/services/tiktok.js`.
 - Twitch et YouTube sont interroges par polling (intervalle configurable via `.env`), pas de push temps reel (EventSub webhook/websocket non implemente pour rester simple a auto-heberger).
+- Le suivi des clips/videos ne notifie que le plus recent detecte a chaque poll : si plusieurs clips/videos sont publies dans le meme intervalle, seul le dernier declenche une notification.
 - Le panel utilise un stockage de session SQLite maison (`src/web/sessionStore.js`) : un seul processus Node a la fois (pas de scaling horizontal sans changer de store).
 - Les tokens OAuth (streamers et membres lies) sont stockes en clair dans la base SQLite, comme le reste des donnees. Pas de chiffrement au repos : suffisant pour un bot self-host, a garder en tete si le fichier de base venait a fuiter.
 - Un compte Twitch/YouTube lie via `/link` est global (un compte Discord = un seul compte Twitch/YouTube lie, valable sur tous les serveurs communs avec le bot), pas par serveur.

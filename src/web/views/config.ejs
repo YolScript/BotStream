@@ -36,6 +36,36 @@
     </select>
   </label>
 
+  <label>
+    <span class="platform-badge platform-twitch"><span class="dot"></span>Twitch</span> — salon des clips
+    <select name="twitch_clips_channel">
+      <option value="">Non configure</option>
+      <% textChannels.forEach(function(c) { %>
+        <option value="<%= c.id %>" <%= cfg.twitch_clips_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+      <% }) %>
+    </select>
+  </label>
+
+  <label>
+    <span class="platform-badge platform-youtube"><span class="dot"></span>YouTube</span> — salon des videos
+    <select name="youtube_videos_channel">
+      <option value="">Non configure</option>
+      <% textChannels.forEach(function(c) { %>
+        <option value="<%= c.id %>" <%= cfg.youtube_videos_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+      <% }) %>
+    </select>
+  </label>
+
+  <label>
+    <span class="platform-badge platform-tiktok"><span class="dot"></span>TikTok</span> — salon des videos
+    <select name="tiktok_videos_channel">
+      <option value="">Non configure</option>
+      <% textChannels.forEach(function(c) { %>
+        <option value="<%= c.id %>" <%= cfg.tiktok_videos_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+      <% }) %>
+    </select>
+  </label>
+
   <label>Role a mentionner lors d'une notification
     <select name="ping_role">
       <option value="">Aucun</option>

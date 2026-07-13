@@ -46,6 +46,11 @@ async function getStreamsByLogins(logins) {
   return helixGet('streams', { user_login: logins });
 }
 
+// Retourne les clips crees depuis `startedAt` (ISO 8601) sur la chaine, du plus recent au plus ancien.
+async function getClips(broadcasterId, startedAt) {
+  return helixGet('clips', { broadcaster_id: broadcasterId, started_at: startedAt, first: 20 });
+}
+
 // Necessite le token du STREAMER (scope moderator:read:followers, broadcaster_id = son propre ID).
 async function isFollowing(streamerAccessToken, broadcasterId, userId) {
   const res = await axios.get('https://api.twitch.tv/helix/channels/followers', {

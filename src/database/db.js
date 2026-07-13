@@ -77,8 +77,19 @@ for (const [column, ddl] of [
   ['oauth_access_token', 'ALTER TABLE streamers ADD COLUMN oauth_access_token TEXT'],
   ['oauth_refresh_token', 'ALTER TABLE streamers ADD COLUMN oauth_refresh_token TEXT'],
   ['oauth_token_expires_at', 'ALTER TABLE streamers ADD COLUMN oauth_token_expires_at TEXT'],
+  // Dernier clip (Twitch) ou derniere video (YouTube/TikTok) notifie, distinct de last_stream_key (live).
+  ['last_content_id', 'ALTER TABLE streamers ADD COLUMN last_content_id TEXT'],
 ]) {
   if (!streamerColumns.has(column)) db.exec(ddl);
+}
+
+const guildConfigColumns = new Set(db.prepare('PRAGMA table_info(guild_configs)').all().map((c) => c.name));
+for (const [column, ddl] of [
+  ['twitch_clips_channel_id', 'ALTER TABLE guild_configs ADD COLUMN twitch_clips_channel_id TEXT'],
+  ['youtube_videos_channel_id', 'ALTER TABLE guild_configs ADD COLUMN youtube_videos_channel_id TEXT'],
+  ['tiktok_videos_channel_id', 'ALTER TABLE guild_configs ADD COLUMN tiktok_videos_channel_id TEXT'],
+]) {
+  if (!guildConfigColumns.has(column)) db.exec(ddl);
 }
 
 module.exports = db;

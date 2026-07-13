@@ -66,6 +66,18 @@ function updateOAuthTokens(id, { accessToken, refreshToken, expiresAt }) {
   ).run(accessToken, refreshToken, expiresAt, id);
 }
 
+// Marque le dernier clip/video vu, independamment de l'etat live (last_stream_key).
+function setContentState(id, contentId) {
+  db.prepare('UPDATE streamers SET last_content_id = ?, last_checked_at = datetime(\'now\') WHERE id = ?').run(
+    contentId,
+    id
+  );
+}
+
+function setPlatformChannelId(id, platformChannelId) {
+  db.prepare('UPDATE streamers SET platform_channel_id = ? WHERE id = ?').run(platformChannelId, id);
+}
+
 module.exports = {
   add,
   remove,
@@ -75,4 +87,6 @@ module.exports = {
   listByPlatform,
   setLiveState,
   updateOAuthTokens,
+  setContentState,
+  setPlatformChannelId,
 };

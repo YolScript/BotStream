@@ -23,4 +23,18 @@ function setPingRole(guildId, roleId) {
   db.prepare('UPDATE guild_configs SET ping_role_id = ? WHERE guild_id = ?').run(roleId, guildId);
 }
 
-module.exports = { get, setChannel, setPingRole };
+// Salon dedie au contenu (clips Twitch, nouvelles videos YouTube/TikTok), distinct du salon "live".
+const CONTENT_CHANNEL_COLUMN = {
+  twitch: 'twitch_clips_channel_id',
+  youtube: 'youtube_videos_channel_id',
+  tiktok: 'tiktok_videos_channel_id',
+};
+
+function setContentChannel(guildId, platform, channelId) {
+  const column = CONTENT_CHANNEL_COLUMN[platform];
+  if (!column) throw new Error(`Plateforme invalide: ${platform}`);
+  ensure(guildId);
+  db.prepare(`UPDATE guild_configs SET ${column} = ? WHERE guild_id = ?`).run(channelId, guildId);
+}
+
+module.exports = { get, setChannel, setPingRole, setContentChannel };

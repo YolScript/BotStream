@@ -40,4 +40,30 @@ async function checkLive(channelId) {
   };
 }
 
-module.exports = { resolveChannelId, checkLive };
+// Retourne { videoId, title, thumbnailUrl, publishedAt } pour la derniere video "normale"
+// (hors live/upcoming) publiee sur la chaine, ou null si aucune trouvee.
+async function getLatestVideo(channelId) {
+  const res = await axios.get(`${BASE}/search`, {
+    params: {
+      part: 'snippet',
+      channelId,
+      type: 'video',
+      order: 'date',
+      maxResults: 5,
+      key: config.youtube.apiKey,
+    },
+  });
+
+  const items = res.data.items || [];
+  const item = items.find((it) => it.snippet.liveBroadcastContent === 'none');
+  if (!item) return null;
+
+  return {
+    videoId: item.id.videoId,
+    title: item.snippet.title,
+    thumbnailUrl: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.default?.url,
+    publishedAt: item.snippet.publishedAt,
+  };
+}
+
+module.exports = { resolveChannelId, checkLive, getLatestVideo };
